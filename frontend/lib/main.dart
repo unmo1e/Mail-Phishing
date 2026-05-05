@@ -44,7 +44,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _isLoading = false;
 
   // Replace this URL with your actual backend endpoint
-  final String _backendUrl = 'https://httpbin.org/post';
+  final String _backendUrl = 'http://127.0.0.1:5000/predict';
 
   @override
   void initState() {
@@ -89,10 +89,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
     // Add user message to chat
     setState(() {
-      _messages.add(Message(userMessageText, true));
-      _subjectController.clear();
-      _bodyController.clear();
-      _isLoading = true;
+        _messages.add(Message(userMessageText, true));
+        _subjectController.clear();
+        _bodyController.clear();
+        _isLoading = true;
     });
     _scrollToBottom();
 
@@ -118,28 +118,28 @@ class _ChatScreenState extends State<ChatScreen> {
         if (responseData.containsKey('json')) {
           final echoedData = responseData['json'] as Map<String, dynamic>;
           replyText = '✅ Backend received:\n'
-              'Subject: ${echoedData['subject']}\n'
-              'Body: ${echoedData['body']}';
+          'Subject: ${echoedData['subject']}\n'
+          'Body: ${echoedData['body']}';
         } else {
           // Fallback in case response format is different
           replyText = '✅ Response from server:\n${response.body}';
         }
 
         setState(() {
-          _messages.add(Message(replyText, false));
+            _messages.add(Message(replyText, false));
         });
       } else {
         setState(() {
-          _messages.add(Message('❌ Server error: ${response.statusCode}', false));
+            _messages.add(Message('❌ Server error: ${response.statusCode}', false));
         });
       }
     } catch (e) {
       setState(() {
-        _messages.add(Message('❌ Failed to connect: $e', false));
+          _messages.add(Message('❌ Failed to connect: $e', false));
       });
     } finally {
       setState(() {
-        _isLoading = false;
+          _isLoading = false;
       });
       _scrollToBottom();
     }
@@ -169,8 +169,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       text: message.text,
                       isSender: message.isUser,
                       color: message.isUser
-                          ? Colors.blue.shade400
-                          : Colors.grey.shade300,
+                      ? Colors.blue.shade400
+                      : Colors.grey.shade300,
                       textStyle: TextStyle(
                         color: message.isUser ? Colors.white : Colors.black87,
                         fontSize: 14,
@@ -230,22 +230,22 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                         child: _isLoading
-                            ? const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text('Sending...'),
-                                ],
-                              )
-                            : const Text('Send Message'),
+                        ? const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text('Sending...'),
+                          ],
+                        )
+                        : const Text('Send Message'),
                       ),
                     ),
                   ],

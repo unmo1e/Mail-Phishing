@@ -1,3 +1,4 @@
+# model loading and prediction function
 from transformers import DistilBertForSequenceClassification, DistilBertTokenizer
 import torch
 import re
@@ -32,3 +33,35 @@ def predict_email(text):
     return label, phishing_prob
 
 print(predict_email("Your account has been suspended. Click here to verify immediately"))
+
+
+# The web server
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.get_json()
+
+    subject = data.get('subject', '')
+    body = data.get('body', '')
+
+    # Combine subject and body
+    combined_text = f"{subject} {body}"
+
+    # Run prediction
+    label, probability = predict_email(combined_text)
+
+    # Format response
+    response = {
+        "subject": subject,
+        "body": f"Prediction: {label}, Probability: {probability}"
+    }
+
+    return jsonify(response)
+
+if __name__ == '__main__':
+    app.run(debug=True)
