@@ -85,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (_isLoading) return;
 
     // Create the user's message text
-    final userMessageText = '**Subject:** $subject\n**Message:** $body';
+    final userMessageText = 'Subject: $subject\nMessage: $body';
 
     // Add user message to chat
     setState(() {
@@ -122,7 +122,14 @@ class _ChatScreenState extends State<ChatScreen> {
           'Body: ${echoedData['body']}';
         } else {
           // Fallback in case response format is different
-          replyText = '✅ Response from server:\n${response.body}';
+          final Map<String, dynamic> responseDecodedData = jsonDecode(response.body);
+          String replySubject = responseDecodedData['subject']?.toString() ?? '(no subject)';
+          String replyBody = responseDecodedData['body']?.toString() ?? '(no response)';
+
+          replyText= '📩 Response from server\n\n'
+          'Subject: $replySubject\n\n'
+          'Prediction: $replyBody';
+          // replyText = '✅ Response from server:\n${response.body}';
         }
 
         setState(() {

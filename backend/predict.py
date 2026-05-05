@@ -1,11 +1,21 @@
-# model loading and prediction function
+##### Check if model directory exists
+import sys
+from pathlib import Path
+
+model_path = Path("./saved_model")
+
+if not model_path.is_dir():
+    sys.exit(f"Error: The directory '{model_path}' does not exist.")
+
+
+#### model loading and prediction function
 from transformers import DistilBertForSequenceClassification, DistilBertTokenizer
 import torch
 import re
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = DistilBertForSequenceClassification.from_pretrained("./saved_model")
-tokenizer = DistilBertTokenizer.from_pretrained("./saved_model")
+model = DistilBertForSequenceClassification.from_pretrained(model_path)
+tokenizer = DistilBertTokenizer.from_pretrained(model_path)
 model.to(device)
 
 def clean_text(text):
@@ -35,7 +45,7 @@ def predict_email(text):
 print(predict_email("Your account has been suspended. Click here to verify immediately"))
 
 
-# The web server
+##### The web server
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -58,7 +68,7 @@ def predict():
     # Format response
     response = {
         "subject": subject,
-        "body": f"Prediction: {label}, Probability: {probability}"
+        "body": f"This is a {label} mail, The probability of it being a phishing mail is {probability * 100:.2f}%"
     }
 
     return jsonify(response)
